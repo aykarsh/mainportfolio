@@ -10,12 +10,24 @@
 </head>
 <body>
     <h1 class="nameheading">Akarsh Narayanan</h1>
-    <button type="button" class="dark" id="darktheme"><img src="dark.png" alt="light.png" width="30" height="30"></button>
+
+    <button type="button" class="dark" id="darktheme">
+        <img class="light" id="themeimg" src="light.png">
+    </button>
     <script>
-        const darktheme = document.getElementById('darktheme');
-        darktheme.addEventListener('click',()=>{
-            document.body.classList.toggle('dark');
-        })
+        const btn = document.getElementById("darktheme");
+        const body = document.body;
+        body.classList.add("light-mode");
+        btn.addEventListener("click",() => {
+            if(body.classList.contains("light-mode")){
+            body.classList.remove("light-mode");
+            body.classList.add("dark-mode");
+        }
+        else{
+            body.classList.remove("dark-mode");
+            body.classList.add("light-mode");
+        }       
+    });
     </script>
     <div class="navcontainer">
     <div class="nav-item">        
