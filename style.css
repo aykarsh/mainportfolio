@@ -10,6 +10,7 @@
         .dark-mode{
             background-color: black;
             color:white;
+            transition:0.2s ease-in-out;
         }
         .dark-mode img{
             content:url("light.png");
@@ -32,6 +33,8 @@
         .light-mode{
             background-color: white;
             color:black;
+            transition:0.2s ease-in-out;
+
         }
         .light-mode img{
             content:url("dark.png");
