@@ -14,12 +14,12 @@ const Projects = () => {
     {
       title: "CertiFi",
       category: "Web 3",
-      image: "placeholder2"
+      image: "/images/TrueTicket.png"
     },
     {
       title: "zkRisk",
       category: "Web 3",
-      image: "/images/html.png"
+      image: "/images/pythonLogo.png"
     },
     {
       title: "GroundAI",
