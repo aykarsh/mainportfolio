@@ -84,3 +84,4 @@ app.post('/api/contact', async (req, res) => {
       message: 'Failed to send email. Please try again later.' 
     });
   }
+});
