@@ -2,15 +2,44 @@
 import { motion, useInView } from 'framer-motion';
 
 const Contact = () => {
-  const [email, setEmail] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Email:', email);
-    alert('Thank you! Your email has been received.');
-    setEmail('');
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus({ type: 'success', message: 'Email sent successfully!' });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setSubmitStatus({ type: 'error', message: data.message || 'Failed to send email.' });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setSubmitStatus({ type: 'error', message: 'Failed to send email. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -44,24 +73,68 @@ const Contact = () => {
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.2 }}
           >
-            <textarea
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="Your Name (optional)"
+              className="w-full px-8 py-4 border-2 border-gray-300 rounded-lg focus:border-gray-600 focus:outline-none transition-colors font-serif text-lg bg-white shadow-sm mb-4"
+            />
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.2 }}
+          >
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              placeholder="Type your email message here..."
+              placeholder="Your Email Address"
+              className="w-full px-8 py-4 border-2 border-gray-300 rounded-lg focus:border-gray-600 focus:outline-none transition-colors font-serif text-lg bg-white shadow-sm mb-4"
+            />
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.2 }}
+          >
+            <textarea
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              required
+              placeholder="Type your message here..."
               rows="8"
               className="w-full px-8 py-6 border-2 border-gray-300 rounded-lg focus:border-gray-600 focus:outline-none transition-colors font-serif text-lg resize-none bg-white shadow-sm"
             />
           </motion.div>
 
+          {submitStatus && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-4 rounded-lg ${
+                submitStatus.type === 'success' 
+                  ? 'bg-green-100 text-green-800 border border-green-300' 
+                  : 'bg-red-100 text-red-800 border border-red-300'
+              }`}
+            >
+              {submitStatus.message}
+            </motion.div>
+          )}
+
           <motion.button
             type="submit"
-            className="px-12 py-4 bg-gray-900 text-white font-serif text-lg rounded-lg hover:bg-gray-800 transition-colors shadow-md"
-            whileHover={{ scale: 1.03, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.3)" }}
-            whileTap={{ scale: 0.98 }}
+            disabled={isSubmitting}
+            className={`px-12 py-4 bg-gray-900 text-white font-serif text-lg rounded-lg hover:bg-gray-800 transition-colors shadow-md ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            whileHover={!isSubmitting ? { scale: 1.03, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.3)" } : {}}
+            whileTap={!isSubmitting ? { scale: 0.98 } : {}}
             transition={{ duration: 0.2 }}
           >
-            Send Email
+            {isSubmitting ? 'Sending...' : 'Send Email'}
           </motion.button>
         </motion.form>
       </motion.div>

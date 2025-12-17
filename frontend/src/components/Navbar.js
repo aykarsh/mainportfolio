@@ -31,8 +31,18 @@ const Navbar = () => {
             >
               Contact
             </motion.a>
-          </motion.div>
           
+
+          <motion.a 
+              href="Akarsh Resume.pdf" 
+              target="_blank"
+              className="text-sm tracking-wider uppercase hover:opacity-60 transition-opacity"
+              whileHover={{ y: -2 }}
+            >
+              Resume
+            </motion.a>
+          </motion.div>
+
           <motion.div 
             className="flex gap-6"
             initial={{ opacity: 0 }}

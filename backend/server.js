@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
@@ -10,22 +11,63 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Email transporter configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, // Your Gmail address
+    pass: process.env.EMAIL_PASS  // Your Gmail App Password
+  }
+});
+
 // Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Portfolio Backend API' });
 });
 
-// Placeholder for contact form endpoint
-app.post('/api/contact', (req, res) => {
-  const { email, message } = req.body;
+// Contact form endpoint
+app.post('/api/contact', async (req, res) => {
+  const { name, email, message } = req.body;
   
-  // TODO: Implement email sending or database storage
-  console.log('Contact form submission:', { email, message });
-  
-  res.json({ 
-    success: true, 
-    message: 'Message received successfully' 
-  });
+  // Validate input
+  if (!email || !message) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Email and message are required' 
+    });
+  }
+
+  // Email options
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_USER, // Send to your own email
+    subject: `Portfolio Contact Form - ${name || email}`,
+    text: message,
+    html: `
+      <h3>New Contact Form Submission</h3>
+      <p><strong>Name:</strong> ${name || 'Not provided'}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message}</p>
+    `,
+    replyTo: email // Allow you to reply directly to the sender
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully to:', process.env.EMAIL_USER);
+    
+    res.json({ 
+      success: true, 
+      message: 'Email sent successfully!' 
+    });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to send email. Please try again later.' 
+    });
+  }
 });
 
 app.listen(PORT, () => {
