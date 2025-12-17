@@ -1,5 +1,6 @@
 ﻿import React, { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,24 +19,20 @@ const Contact = () => {
     setSubmitStatus(null);
 
     try {
-      // Use environment variable or fallback to localhost for development
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Send email using EmailJS directly from browser
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name || 'Anonymous',
+          from_email: formData.email,
+          message: formData.message,
         },
-        body: JSON.stringify(formData),
-      });
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+      );
 
-      const data = await response.json();
-
-      if (data.success) {
-        setSubmitStatus({ type: 'success', message: 'Email sent successfully!' });
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        setSubmitStatus({ type: 'error', message: data.message || 'Failed to send email.' });
-      }
+      setSubmitStatus({ type: 'success', message: 'Email sent successfully!' });
+      setFormData({ name: '', email: '', message: '' });
     } catch (error) {
       console.error('Error:', error);
       setSubmitStatus({ type: 'error', message: 'Failed to send email. Please try again.' });
