@@ -1,10 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const sgMail = require('@sendgrid/mail');
+const emailjs = require('@emailjs/nodejs');
 require('dotenv').config();
-
-// Configure SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -55,26 +52,26 @@ app.post('/api/contact', async (req, res) => {
     });
   }
 
-  // Email options
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER, // Send to your own email
-    subject: `Portfolio Contact Form - ${name || email}`,
-    text: message,
-    html: `
-      <h3>New Contact Form Submission</h3>
-      <p><strong>Name:</strong> ${name || 'Not provided'}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Message:</strong></p>
-      <p>${message}</p>
-    `,
-    replyTo: email // Allow you to reply directly to the sender
+  // EmailJS template parameters
+  const templateParams = {
+    from_name: name || 'Anonymous',
+    from_email: email,
+    message: message,
+    to_email: process.env.EMAIL_USER
   };
 
   try {
-    const transporter = await createTransporter();
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully to:', process.env.EMAIL_USER);
+    await emailjs.send(
+      process.env.EMAILJS_SERVICE_ID,
+      process.env.EMAILJS_TEMPLATE_ID,
+      templateParams,
+      {
+        publicKey: process.env.EMAILJS_PUBLIC_KEY,
+        privateKey: process.env.EMAILJS_PRIVATE_KEY
+      }
+    );
+    
+    console.log('Email sent successfully via EmailJS');
     
     res.json({ 
       success: true, 
@@ -86,29 +83,4 @@ app.post('/api/contact', async (req, res) => {
       success: false, 
       message: 'Failed to send email. Please try again later.' 
     });
-  }SendGrid email message
-  const msg = {
-    to: process.env.EMAIL_USER, // Your email where you'll receive messages
-    from: process.env.SENDGRID_VERIFIED_EMAIL, // Must be verified in SendGrid
-    replyTo: email, // User's email for reply
-    subject: `Portfolio Contact Form - ${name || email}`,
-    text: message,
-    html: `
-      <h3>New Contact Form Submission</h3>
-      <p><strong>Name:</strong> ${name || 'Not provided'}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Message:</strong></p>
-      <p>${message}</p>
-    `
-  };
-
-  try {
-    await sgMail.send(msg);
-    console.log('Email sent successfully to:', process.env.EMAIL_USER);
-    
-    res.json({ 
-      success: true, 
-      message: 'Email sent successfully!' 
-    });
-  } catch (error) {
-    console.error('Error sending email:', error.response ? error.response.body :
+  }
