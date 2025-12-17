@@ -36,6 +36,7 @@ const Navbar = () => {
           <motion.a 
               href="Akarsh Resume.pdf" 
               target="_blank"
+              rel="noreferrer"
               className="text-sm tracking-wider uppercase hover:opacity-60 transition-opacity"
               whileHover={{ y: -2 }}
             >
@@ -50,28 +51,31 @@ const Navbar = () => {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <motion.a 
-              href="#" 
+              href="https://x.com/Akarsh594868"
+              target="_blank"
+              rel="noreferrer"
               className="text-sm hover:opacity-60 transition-opacity"
               whileHover={{ scale: 1.1 }}
             >
-              <a href="https://x.com/Akarsh594868" target="_blank"><img src="/images/twitter.png" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                </img></a>
+              <img src="/images/twitter.png" className="w-5 h-5" alt="Twitter" />
             </motion.a>
             <motion.a 
-              href="#" 
+              href="https://www.linkedin.com/in/akarsh-narayanan-707a10229/"
+              target="_blank"
+              rel="noreferrer"
               className="text-sm hover:opacity-60 transition-opacity"
               whileHover={{ scale: 1.1 }}
             >
-              <a href="https://www.linkedin.com/in/akarsh-narayanan-707a10229/" target='_blank'><img src="/images/linkedIn.png" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              </img></a>
+              <img src="/images/linkedIn.png" className="w-5 h-5" alt="LinkedIn" />
             </motion.a>
             <motion.a 
-              href="#" 
+              href="https://github.com/aykarsh"
+              target="_blank"
+              rel="noreferrer"
               className="text-sm hover:opacity-60 transition-opacity"
               whileHover={{ scale: 1.1 }}
             >
-              <a href="https://github.com/aykarsh" target='_blank'><img src="/images/github.png" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              </img></a>
+              <img src="/images/github.png" className="w-5 h-5" alt="GitHub" />
             </motion.a>
           </motion.div>
         </div>
