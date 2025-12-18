@@ -9,22 +9,26 @@ const Projects = () => {
     {
       title: "TrueTicket",
       category: "Web 3",
-      image: "/images/TrueTicket.png"
+      image: "/images/TrueTicket.png",
+      link: "https://github.com/aykarsh/TrueTicket"
     },
     {
       title: "CertiFi",
       category: "Web 3",
-      image: "/images/TrueTicket.png"
+      image: "/images/TrueTicket.png",
+      link:"https://github.com/SanjayGanesh614/CertiFi"
     },
     {
       title: "zkRisk",
       category: "Web 3",
-      image: "/images/pythonLogo.png"
+      image: "/images/pythonLogo.png",
+      link:"https://github.com/aykarsh/zkRisk"
     },
     {
       title: "GroundAI",
       category: "AI Chatbot",
-      image: "/images/html.png"
+      image: "/images/html.png",
+      link:"https://github.com/aykarsh/GroundAI"
     }
   ];
 
@@ -45,10 +49,10 @@ const Projects = () => {
       >
         My Latest Projects
       </motion.h2>
-
       <div className="grid md:grid-cols-3 gap-8">
-        {projects.map((project, index) => (
-          <motion.div
+        {projects.map((project, index) =>
+        <a href={project.link} target="_blank" rel="noopener noreferrer" key={index} className="block"> 
+          <motion.div 
             key={index}
             className="group cursor-pointer"
             initial={{ opacity: 0, y: 50 }}
@@ -75,13 +79,15 @@ const Projects = () => {
                 <span className="text-xs text-center px-2">{project.category}</span>
               </motion.div>
             </motion.div>
+            
             <motion.h3 
               className="font-serif text-2xl text-left group-hover:opacity-60 transition-opacity"
             >
               {project.title}
             </motion.h3>
           </motion.div>
-        ))}
+        </a>
+        )}
       </div>
     </motion.section>
   );
